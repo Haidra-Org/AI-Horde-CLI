@@ -4,7 +4,7 @@ This repository contains python scripts which allow you to interface with the [A
 
 ## Installation
 
-1. Git clone [this repository](https://github.com/db0/AI-Horde-CLI)
+1. git clone this repository
 1. Make sure you have python3 installed
 1. Open a git bash (or just bash in linux)
 1. Download the cli requirements with `python -m pip install -r cli_requirements.txt --user`
