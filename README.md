@@ -1,6 +1,6 @@
 # AI Horde Command Line Interface
 
-This repository contains python scripts which allow you to interface with the AI Horde via a CLI.
+This repository contains python scripts which allow you to interface with the [AI Horde](https://aihorde.net) via a CLI.
 
 ## Installation
 
