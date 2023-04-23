@@ -1,5 +1,6 @@
 import requests, json, os, time, argparse, base64
 import yaml
+import sys
 
 from cli_logger import logger, set_logger_verbosity, quiesce_logger, test_logger
 from PIL import Image
@@ -72,36 +73,10 @@ class RequestData(object):
     
 def load_request_data():
     request_data = RequestData()
-    try:
-        request_data.api_key = crd.api_key
-    except AttributeError:
-        pass
-    try:
-        request_data.filename = crd.filename
-    except AttributeError:
-        pass
-    try:
-        for p in crd.imgen_params:
-            request_data.imgen_params[p] = crd.imgen_params[p]
-    except AttributeError:
-        pass
-    try:
-        for s in crd.submit_dict:
-            request_data.submit_dict[s] = crd.submit_dict[s]
-    except AttributeError:
-        pass
-    try:
-        request_data.source_image = crd.source_image
-    except AttributeError:
-        pass
-    try:
-        request_data.source_processing = crd.source_processing
-    except AttributeError:
-        pass
-    try:
-        request_data.source_mask = crd.source_mask
-    except AttributeError:
-        pass
+    with open("cliRequestsData_Dream.yml", "rt", encoding="utf-8", errors="ignore") as configfile:
+        config = yaml.safe_load(configfile)
+        for key, value in config.items():
+            setattr(request_data, key, value)
     if args.api_key: request_data.api_key = args.api_key 
     if args.filename: request_data.filename = args.filename 
     if args.amount: request_data.imgen_params["n"] = args.amount 
@@ -126,7 +101,7 @@ def generate():
         "apikey": request_data.api_key,
         "Client-Agent": request_data.client_agent,
     }
-    # logger.debug(request_data.get_submit_dict())
+    logger.debug(request_data.get_submit_dict())
     submit_req = requests.post(f'{args.horde}/api/v2/generate/async', json = request_data.get_submit_dict(), headers = headers)
     if submit_req.ok:
         submit_results = submit_req.json()
@@ -198,26 +173,5 @@ def generate():
 
 set_logger_verbosity(args.verbosity)
 quiesce_logger(args.quiet)
-
-try:
-    import cliRequestsData_Dream as crd
-    logger.info("Imported cliRequestsData_Dream.py")
-except:
-    logger.warning("No cliRequestsData_Dream.py found, use default where no CLI args are set")
-    class temp(object):
-        def __init__(self):
-            self.filename = "horde_generation.png"
-            self.imgen_params = {
-                "n": 1,
-                "width": 64*8,
-                "height":64*8,
-                "steps": 50,
-            }
-            self.submit_dict = {
-                "prompt": "a horde of cute stable robots in a sprawling server room repairing a massive mainframe",
-                "api_key": "0000000000",
-            }
-    crd = temp()
-
 
 generate()

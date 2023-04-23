@@ -34,7 +34,8 @@ options:
   --horde HORDE         Use a different horde
   --trusted_workers     If true, the request will be sent only to trusted workers.
   --source_image SOURCE_IMAGE
-                        When a file path is provided, will be used as the source for img2img
+                        A file path to an image file must be provided if one is not set in
+                        cliRequestsData.
 ```
 
 ## CliRequestData

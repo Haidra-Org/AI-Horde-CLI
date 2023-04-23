@@ -1,5 +1,6 @@
 import requests, json, os, time, argparse, base64
 import yaml
+import sys
 
 from cli_logger import logger, set_logger_verbosity, quiesce_logger, test_logger
 from PIL import Image
@@ -13,7 +14,7 @@ arg_parser.add_argument('-v', '--verbosity', action='count', default=0, help="Th
 arg_parser.add_argument('-q', '--quiet', action='count', default=0, help="The default logging level is ERROR or higher. This value decreases the amount of logging seen in your screen")
 arg_parser.add_argument('--horde', action="store", required=False, type=str, default="https://aihorde.net", help="Use a different horde")
 arg_parser.add_argument('--trusted_workers', action="store_true", default=False, required=False, help="If true, the request will be sent only to trusted workers.")
-arg_parser.add_argument('--source_image', action="store", required=False, type=str, help="When a file path is provided, will be used as the source for img2img")
+arg_parser.add_argument('--source_image', action="store", required=False, type=str, help="A file path to an image file must be provided if one is not set in cliRequestsData.")
 args = arg_parser.parse_args()
 
 
@@ -45,28 +46,10 @@ class RequestData(object):
     
 def load_request_data():
     request_data = RequestData()
-    try:
-        request_data.api_key = crd.api_key
-    except AttributeError:
-        pass
-    try:
-        request_data.filename = crd.filename
-    except AttributeError:
-        pass
-    try:
-        for p in crd.alchemy_params:
-            request_data.alchemy_params[p] = crd.alchemy_params[p]
-    except AttributeError:
-        pass
-    try:
-        for s in crd.submit_dict:
-            request_data.submit_dict[s] = crd.submit_dict[s]
-    except AttributeError:
-        pass
-    try:
-        request_data.source_image = crd.source_image
-    except AttributeError:
-        pass
+    with open("cliRequestsData_Alchemy.yml", "rt", encoding="utf-8", errors="ignore") as configfile:
+        config = yaml.safe_load(configfile)
+        for key, value in config.items():
+            setattr(request_data, key, value)
     if args.api_key: request_data.api_key = args.api_key 
     if args.filename: request_data.filename = args.filename 
     if args.trusted_workers: request_data.submit_dict["trusted_workers"] = args.trusted_workers 
@@ -162,23 +145,5 @@ def generate():
 
 set_logger_verbosity(args.verbosity)
 quiesce_logger(args.quiet)
-
-try:
-    import cliRequestsData_Alchemy as crd
-    logger.info("Imported cliRequestsData_Alchemy.py")
-except:
-    logger.warning("No cliRequestsData_Alchemy.py found, use default where no CLI args are set")
-    class temp(object):
-        def __init__(self):
-            self.filename = "horde_alchemy.png"
-            self.submit_dict = {
-                "trusted_workers": False,
-                "forms": [
-                    {"name": "caption"},
-                ]
-            }
-            self.source_image = './db0.jpg'
-    crd = temp()
-
 
 generate()

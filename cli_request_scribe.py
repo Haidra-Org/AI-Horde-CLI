@@ -1,5 +1,6 @@
 import requests, json, os, time, argparse, base64
 import yaml
+import sys
 
 from cli_logger import logger, set_logger_verbosity, quiesce_logger, test_logger
 from PIL import Image
@@ -41,20 +42,10 @@ class RequestData(object):
     
 def load_request_data():
     request_data = RequestData()
-    try:
-        request_data.api_key = crd.api_key
-    except AttributeError:
-        pass
-    try:
-        for p in crd.txtgen_params:
-            request_data.txtgen_params[p] = crd.txtgen_params[p]
-    except AttributeError:
-        pass
-    try:
-        for s in crd.submit_dict:
-            request_data.submit_dict[s] = crd.submit_dict[s]
-    except AttributeError:
-        pass
+    with open("cliRequestsData_Scribe.yml", "rt", encoding="utf-8", errors="ignore") as configfile:
+        config = yaml.safe_load(configfile)
+        for key, value in config.items():
+            setattr(request_data, key, value)
     if args.api_key: request_data.api_key = args.api_key 
     if args.amount: request_data.txtgen_params["n"] = args.amount 
     if args.max_context_length: request_data.txtgen_params["max_context_length"] = args.max_context_length 
@@ -122,24 +113,5 @@ def generate():
 
 set_logger_verbosity(args.verbosity)
 quiesce_logger(args.quiet)
-
-try:
-    import cliRequestsData_Scribe as crd
-    logger.info("Imported cliRequestsData_Scribe.py")
-except:
-    logger.warning("No cliRequestsData_Scribe.py found, use default where no CLI args are set")
-    class temp(object):
-        def __init__(self):
-            self.txtgen_params = {
-                "n": 1,
-                "max_context_length": 1024,
-                "max_length":80,
-            }
-            self.submit_dict = {
-                "prompt": "a horde of cute kobolds furiously typing on typewriters",
-                "api_key": "0000000000",
-            }
-    crd = temp()
-
 
 generate()
