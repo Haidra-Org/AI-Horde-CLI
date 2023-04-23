@@ -46,10 +46,11 @@ class RequestData(object):
     
 def load_request_data():
     request_data = RequestData()
-    with open("cliRequestsData_Alchemy.yml", "rt", encoding="utf-8", errors="ignore") as configfile:
-        config = yaml.safe_load(configfile)
-        for key, value in config.items():
-            setattr(request_data, key, value)
+    if os.path.exists("cliRequestsData_Alchemy.yml"):
+        with open("cliRequestsData_Alchemy.yml", "rt", encoding="utf-8", errors="ignore") as configfile:
+            config = yaml.safe_load(configfile)
+            for key, value in config.items():
+                setattr(request_data, key, value)
     if args.api_key: request_data.api_key = args.api_key 
     if args.filename: request_data.filename = args.filename 
     if args.trusted_workers: request_data.submit_dict["trusted_workers"] = args.trusted_workers 

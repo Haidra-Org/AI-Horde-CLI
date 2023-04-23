@@ -31,13 +31,13 @@ class RequestData(object):
     def __init__(self):
             self.client_agent = "cli_request_dream.py:1.0.0:(discord)db0#1625"
             self.api_key = "0000000000"
-            self.filename = "horde_generation.png"
+            self.filename = "horde_dream.png"
             self.imgen_params = {
                 "n": 1,
                 "width": 64*8,
                 "height":64*8,
-                "steps": 50,
-                "sampler_name": "k_euler",
+                "steps": 20,
+                "sampler_name": "k_euler_a",
                 "cfg_scale": 7.5,
                 "denoising_strength": 0.6,
             }
@@ -73,10 +73,11 @@ class RequestData(object):
     
 def load_request_data():
     request_data = RequestData()
-    with open("cliRequestsData_Dream.yml", "rt", encoding="utf-8", errors="ignore") as configfile:
-        config = yaml.safe_load(configfile)
-        for key, value in config.items():
-            setattr(request_data, key, value)
+    if os.path.exists("cliRequestsData_Dream.yml"):
+        with open("cliRequestsData_Dream.yml", "rt", encoding="utf-8", errors="ignore") as configfile:
+            config = yaml.safe_load(configfile)
+            for key, value in config.items():
+                setattr(request_data, key, value)
     if args.api_key: request_data.api_key = args.api_key 
     if args.filename: request_data.filename = args.filename 
     if args.amount: request_data.imgen_params["n"] = args.amount 

@@ -27,7 +27,7 @@ class RequestData(object):
             self.txtgen_params = {
                 "n": 1,
                 "max_context_length": 1024,
-                "max_length": 80,
+                "max_length": 40,
             }
             self.submit_dict = {
                 "prompt": "a horde of cute kobolds furiously typing on typewriters",
@@ -42,10 +42,11 @@ class RequestData(object):
     
 def load_request_data():
     request_data = RequestData()
-    with open("cliRequestsData_Scribe.yml", "rt", encoding="utf-8", errors="ignore") as configfile:
-        config = yaml.safe_load(configfile)
-        for key, value in config.items():
-            setattr(request_data, key, value)
+    if os.path.exists("cliRequestsData_Scribe.yml"):
+        with open("cliRequestsData_Scribe.yml", "rt", encoding="utf-8", errors="ignore") as configfile:
+            config = yaml.safe_load(configfile)
+            for key, value in config.items():
+                setattr(request_data, key, value)
     if args.api_key: request_data.api_key = args.api_key 
     if args.amount: request_data.txtgen_params["n"] = args.amount 
     if args.max_context_length: request_data.txtgen_params["max_context_length"] = args.max_context_length 
