@@ -1,6 +1,6 @@
 filename: "horde_dream.webp"
 api_key: "0000000000"
-source_image: None
+source_image: null
 # You can fill these in to avoid putting them as args all the time
 imgen_params:
     n: 1
