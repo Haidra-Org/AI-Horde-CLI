@@ -54,7 +54,7 @@ def load_request_data():
     if args.api_key: request_data.api_key = args.api_key 
     if args.filename: request_data.filename = args.filename 
     if args.trusted_workers: request_data.submit_dict["trusted_workers"] = args.trusted_workers 
-    if args.source_image: self.source_image = args.source_image
+    if args.source_image: request_data.source_image = args.source_image
     return(request_data)
 
 
