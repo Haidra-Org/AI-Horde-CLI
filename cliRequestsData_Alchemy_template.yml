@@ -3,10 +3,10 @@ api_key: "0000000000"
 source_image: './db0.jpg'
 # Uncomment any of the below you want to use
 submit_dict:
-    trusted_workers: False,
-    slow_workers: True,
+    trusted_workers: False
+    slow_workers: True
     forms: 
-        - name: "caption",
+        - name: "caption"
         # - name: "interrogation",
         # - name: "nsfw",
         # - name: "GFPGAN",
