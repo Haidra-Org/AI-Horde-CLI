@@ -31,6 +31,8 @@ submit_dict:
     slow_workers: true
     shared: true
     replacement_filter: true
+    worker_blacklist: false
+    dry_run: false
     r2: true
     # Put the models you allow to fulfil your request in reverse order of priority. The last model in this list is the most likely to be chosen
     models: 

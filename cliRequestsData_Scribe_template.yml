@@ -8,6 +8,7 @@ submit_dict:
     prompt: "a horde of cute kobolds furiously typing on typewriters"
     trusted_workers: false
     slow_workers: true
+    dry_run: true
     # Put the models you allow to fulfil your request in reverse order of priority. The last model in this list is the most likely to be chosen
     models:
         - PygmalionAI/pygmalion-6b

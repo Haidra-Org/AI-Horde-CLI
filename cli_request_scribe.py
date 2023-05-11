@@ -69,7 +69,10 @@ def generate():
     if submit_req.ok:
         submit_results = submit_req.json()
         logger.debug(submit_results)
-        req_id = submit_results['id']
+        req_id = submit_results.get('id')
+        if not req_id:
+            logger.message(submit_results)
+            return
         is_done = False
         retry = 0
         cancelled = False

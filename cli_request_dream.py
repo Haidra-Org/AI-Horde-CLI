@@ -33,7 +33,7 @@ class RequestData(object):
             self.api_key = "0000000000"
             self.filename = "horde_dream.png"
             self.imgen_params = {
-                "n": 1,
+                "n": 10,
                 "width": 64*8,
                 "height":64*8,
                 "steps": 20,
@@ -102,12 +102,15 @@ def generate():
         "apikey": request_data.api_key,
         "Client-Agent": request_data.client_agent,
     }
-    logger.debug(request_data.get_submit_dict())
+    # logger.debug(request_data.get_submit_dict())
     submit_req = requests.post(f'{args.horde}/api/v2/generate/async', json = request_data.get_submit_dict(), headers = headers)
     if submit_req.ok:
         submit_results = submit_req.json()
         logger.debug(submit_results)
-        req_id = submit_results['id']
+        req_id = submit_results.get('id')
+        if not req_id:
+            logger.message(submit_results)
+            return
         is_done = False
         retry = 0
         cancelled = False
