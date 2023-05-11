@@ -24,12 +24,13 @@ arg_parser.add_argument('--trusted_workers', action="store_true", default=False,
 arg_parser.add_argument('--source_image', action="store", required=False, type=str, help="When a file path is provided, will be used as the source for img2img")
 arg_parser.add_argument('--source_processing', action="store", required=False, type=str, help="Can either be img2img, inpainting, or outpainting")
 arg_parser.add_argument('--source_mask', action="store", required=False, type=str, help="When a file path is provided, will be used as the mask source for inpainting/outpainting")
+arg_parser.add_argument('--dry_run', action="store_true", default=False, required=False, help="If true, The request will only print the amount of kudos the payload would spend, and exit.")
 args = arg_parser.parse_args()
 
 
 class RequestData(object):
     def __init__(self):
-            self.client_agent = "cli_request_dream.py:1.0.0:(discord)db0#1625"
+            self.client_agent = "cli_request_dream.py:1.1.0:(discord)db0#1625"
             self.api_key = "0000000000"
             self.filename = "horde_dream.png"
             self.imgen_params = {
@@ -47,7 +48,8 @@ class RequestData(object):
                 "censor_nsfw": False,
                 "trusted_workers": False,
                 "models": ["stable_diffusion"],
-                "r2": True
+                "r2": True,
+                "dry_run": False
             }
             self.source_image = None
             self.source_processing = "img2img"
@@ -91,6 +93,7 @@ def load_request_data():
     if args.source_image: request_data.source_image = args.source_image
     if args.source_processing: request_data.source_processing = args.source_processing
     if args.source_mask: request_data.source_mask = args.source_mask
+    if args.dry_run: request_data.submit_dict["dry_run"] = args.dry_run 
     return(request_data)
 
 

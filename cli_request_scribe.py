@@ -17,12 +17,13 @@ arg_parser.add_argument('-v', '--verbosity', action='count', default=0, help="Th
 arg_parser.add_argument('-q', '--quiet', action='count', default=0, help="The default logging level is ERROR or higher. This value decreases the amount of logging seen in your screen")
 arg_parser.add_argument('--horde', action="store", required=False, type=str, default="https://aihorde.net", help="Use a different horde")
 arg_parser.add_argument('--trusted_workers', action="store_true", default=False, required=False, help="If true, the request will be sent only to trusted workers.")
+arg_parser.add_argument('--dry_run', action="store_true", default=False, required=False, help="If true, The request will only print the amount of kudos the payload would spend, and exit.")
 args = arg_parser.parse_args()
 
 
 class RequestData(object):
     def __init__(self):
-            self.client_agent = "cli_request_scribe.py:1.0.0:(discord)db0#1625"
+            self.client_agent = "cli_request_scribe.py:1.1.0:(discord)db0#1625"
             self.api_key = "0000000000"
             self.txtgen_params = {
                 "n": 1,
@@ -33,6 +34,7 @@ class RequestData(object):
                 "prompt": "a horde of cute kobolds furiously typing on typewriters",
                 "trusted_workers": False,
                 "models": [],
+                "dry_run": False
             }
 
     def get_submit_dict(self):
@@ -53,6 +55,7 @@ def load_request_data():
     if args.max_length: request_data.txtgen_params["max_length"] = args.max_length 
     if args.prompt: request_data.submit_dict["prompt"] = args.prompt 
     if args.trusted_workers: request_data.submit_dict["trusted_workers"] = args.trusted_workers 
+    if args.dry_run: request_data.submit_dict["dry_run"] = args.dry_run 
     return(request_data)
 
 
