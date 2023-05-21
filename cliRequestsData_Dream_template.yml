@@ -23,6 +23,12 @@ imgen_params:
         # - CodeFormers
     # Uncomment the below line to pass a ControlNet. Make sure you write a valid Control Type
     # control_type: canny
+    # Uncomment the below line to pass a LoRa. The below is provided as an example
+    # You can pass any that you wish. If you do, do not forget to also pass the trigger words in your prompt
+    # loras: [
+    #     {"name": "GlowingRunesAIV6"},
+    # ]
+
 submit_dict: 
     prompt: "a swarm of incredibly cute stable robots, intricate, highly detailed, artstation, concept art, smooth, sharp focus, colorful scene,  in the style of don bluth, greg rutkowski, disney, and hans zatzka"
     nsfw: false
