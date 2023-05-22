@@ -114,7 +114,10 @@ def generate():
             return
         results = results_json['generations']
         for iter in range(len(results)):
-            logger.generation(f"{iter}: {results[iter]['text']}")
+            if len(results[iter]['text']) == 0:
+                logger.generation(f"{iter}: <This generation returned an empty string (EOS)>")
+            else:
+                logger.generation(f"{iter}: {results[iter]['text']}")
     else:
         logger.error(submit_req.text)
 
