@@ -9,6 +9,7 @@ from requests.exceptions import ConnectionError
 
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('-n', '--amount', action="store", required=False, type=int, help="The amount of images to generate with this prompt")
+arg_parser.add_argument("-m" ,'--model', action="store", default="stable_diffusion", required=False, type=str, help="Generalist AI image generating model. The baseline for all finetuned models")
 arg_parser.add_argument('-p','--prompt', action="store", required=False, type=str, help="The prompt with which to generate images")
 arg_parser.add_argument('-w', '--width', action="store", required=False, type=int, help="The width of the image to generate. Has to be a multiple of 64")
 arg_parser.add_argument('-l', '--height', action="store", required=False, type=int, help="The height of the image to generate. Has to be a multiple of 64")
@@ -87,6 +88,7 @@ def load_request_data():
     if args.height: request_data.imgen_params["height"] = args.height 
     if args.steps: request_data.imgen_params["steps"] = args.steps 
     if args.prompt: request_data.submit_dict["prompt"] = args.prompt 
+    if args.model: request_data.submit_dict["model"] = args.model
     if args.nsfw: request_data.submit_dict["nsfw"] = args.nsfw 
     if args.censor_nsfw: request_data.submit_dict["censor_nsfw"] = args.censor_nsfw 
     if args.trusted_workers: request_data.submit_dict["trusted_workers"] = args.trusted_workers 
@@ -95,6 +97,7 @@ def load_request_data():
     if args.source_mask: request_data.source_mask = args.source_mask
     if args.dry_run: request_data.submit_dict["dry_run"] = args.dry_run 
     return(request_data)
+
 
 
 @logger.catch(reraise=True)
