@@ -174,7 +174,7 @@ def generate():
             censored = ''
             if results[iter]["censored"]:
                 censored = " (censored)"
-            logger.generation(f"Saved{censored} {final_filename}")
+            logger.generation(f"Saved{censored} {final_filename} (via {results[iter]['worker_id']})")
     else:
         logger.error(submit_req.text)
 
