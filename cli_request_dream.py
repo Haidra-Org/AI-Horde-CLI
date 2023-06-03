@@ -1,6 +1,7 @@
 import requests, json, os, time, argparse, base64
 import yaml
 import sys
+from omegaconf import OmegaConf
 
 from cli_logger import logger, set_logger_verbosity, quiesce_logger, test_logger
 from PIL import Image
@@ -55,6 +56,7 @@ class RequestData(object):
             self.source_image = None
             self.source_processing = "img2img"
             self.source_mask = None
+                
 
     def get_submit_dict(self):
         submit_dict = self.submit_dict.copy()
@@ -81,6 +83,9 @@ def load_request_data():
             config = yaml.safe_load(configfile)
             for key, value in config.items():
                 setattr(request_data, key, value)
+    if os.path.exists("special.yml"):
+        special = OmegaConf.load("special.yml")
+        request_data.imgen_params["special"] = OmegaConf.to_container(special, resolve=True)
     if args.api_key: request_data.api_key = args.api_key 
     if args.filename: request_data.filename = args.filename 
     if args.amount: request_data.imgen_params["n"] = args.amount 
