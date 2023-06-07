@@ -49,7 +49,6 @@ class RequestData(object):
                 "nsfw": False,
                 "censor_nsfw": False,
                 "trusted_workers": False,
-                "models": ["stable_diffusion"],
                 "r2": True,
                 "dry_run": False
             }
