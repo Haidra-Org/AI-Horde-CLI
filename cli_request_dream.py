@@ -27,6 +27,7 @@ arg_parser.add_argument('--source_image', action="store", required=False, type=s
 arg_parser.add_argument('--source_processing', action="store", required=False, type=str, help="Can either be img2img, inpainting, or outpainting")
 arg_parser.add_argument('--source_mask', action="store", required=False, type=str, help="When a file path is provided, will be used as the mask source for inpainting/outpainting")
 arg_parser.add_argument('--dry_run', action="store_true", default=False, required=False, help="If true, The request will only print the amount of kudos the payload would spend, and exit.")
+arg_parser.add_argument('--yml_file', action="store", default="cliRequestsData_Dream.yml", required=False, help="Overrides the default yml, CLI arguments still have priority.")
 args = arg_parser.parse_args()
 
 
@@ -56,51 +57,51 @@ class RequestData(object):
             self.source_image = None
             self.source_processing = "img2img"
             self.source_mask = None
-                
+
 
     def get_submit_dict(self):
         submit_dict = self.submit_dict.copy()
         submit_dict["params"] = self.imgen_params
         submit_dict["source_processing"] = self.source_processing
-        if self.source_image: 
+        if self.source_image:
             final_src_img = Image.open(self.source_image)
             buffer = BytesIO()
             # We send as WebP to avoid using all the horde bandwidth
             final_src_img.save(buffer, format="Webp", quality=95, exact=True)
             submit_dict["source_image"] = base64.b64encode(buffer.getvalue()).decode("utf8")
-        if self.source_mask: 
+        if self.source_mask:
             final_src_mask = Image.open(self.source_mask)
             buffer = BytesIO()
             # We send as WebP to avoid using all the horde bandwidth
             final_src_mask.save(buffer, format="Webp", quality=95, exact=True)
             submit_dict["source_mask"] = base64.b64encode(buffer.getvalue()).decode("utf8")
         return(submit_dict)
-    
+
 def load_request_data():
     request_data = RequestData()
-    if os.path.exists("cliRequestsData_Dream.yml"):
-        with open("cliRequestsData_Dream.yml", "rt", encoding="utf-8", errors="ignore") as configfile:
+    if os.path.exists(args.yml_file):
+        with open(args.yml_file, "rt", encoding="utf-8", errors="ignore") as configfile:
             config = yaml.safe_load(configfile)
             for key, value in config.items():
                 setattr(request_data, key, value)
     if os.path.exists("special.yml"):
         special = OmegaConf.load("special.yml")
         request_data.imgen_params["special"] = OmegaConf.to_container(special, resolve=True)
-    if args.api_key: request_data.api_key = args.api_key 
-    if args.filename: request_data.filename = args.filename 
-    if args.amount: request_data.imgen_params["n"] = args.amount 
-    if args.width: request_data.imgen_params["width"] = args.width 
-    if args.height: request_data.imgen_params["height"] = args.height 
-    if args.steps: request_data.imgen_params["steps"] = args.steps 
-    if args.prompt: request_data.submit_dict["prompt"] = args.prompt 
+    if args.api_key: request_data.api_key = args.api_key
+    if args.filename: request_data.filename = args.filename
+    if args.amount: request_data.imgen_params["n"] = args.amount
+    if args.width: request_data.imgen_params["width"] = args.width
+    if args.height: request_data.imgen_params["height"] = args.height
+    if args.steps: request_data.imgen_params["steps"] = args.steps
+    if args.prompt: request_data.submit_dict["prompt"] = args.prompt
     if args.model: request_data.submit_dict["model"] = args.model
-    if args.nsfw: request_data.submit_dict["nsfw"] = args.nsfw 
-    if args.censor_nsfw: request_data.submit_dict["censor_nsfw"] = args.censor_nsfw 
-    if args.trusted_workers: request_data.submit_dict["trusted_workers"] = args.trusted_workers 
+    if args.nsfw: request_data.submit_dict["nsfw"] = args.nsfw
+    if args.censor_nsfw: request_data.submit_dict["censor_nsfw"] = args.censor_nsfw
+    if args.trusted_workers: request_data.submit_dict["trusted_workers"] = args.trusted_workers
     if args.source_image: request_data.source_image = args.source_image
     if args.source_processing: request_data.source_processing = args.source_processing
     if args.source_mask: request_data.source_mask = args.source_mask
-    if args.dry_run: request_data.submit_dict["dry_run"] = args.dry_run 
+    if args.dry_run: request_data.submit_dict["dry_run"] = args.dry_run
     return(request_data)
 
 
