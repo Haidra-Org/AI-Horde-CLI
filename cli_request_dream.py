@@ -87,17 +87,19 @@ def load_request_data():
     if os.path.exists("special.yml"):
         special = OmegaConf.load("special.yml")
         request_data.imgen_params["special"] = OmegaConf.to_container(special, resolve=True)
-    if args.api_key: request_data.api_key = args.api_key
-    if args.filename: request_data.filename = args.filename
-    if args.amount: request_data.imgen_params["n"] = args.amount
-    if args.width: request_data.imgen_params["width"] = args.width
-    if args.height: request_data.imgen_params["height"] = args.height
-    if args.steps: request_data.imgen_params["steps"] = args.steps
-    if args.prompt: request_data.submit_dict["prompt"] = args.prompt
-    if args.model: request_data.submit_dict["model"] = args.model
-    if args.nsfw: request_data.submit_dict["nsfw"] = args.nsfw
-    if args.censor_nsfw: request_data.submit_dict["censor_nsfw"] = args.censor_nsfw
-    if args.trusted_workers: request_data.submit_dict["trusted_workers"] = args.trusted_workers
+    if os.path.exists("special.json"):
+        special = OmegaConf.load("special.json")
+        request_data.imgen_params["special"] = OmegaConf.to_container(special, resolve=True)
+    if args.api_key: request_data.api_key = args.api_key 
+    if args.filename: request_data.filename = args.filename 
+    if args.amount: request_data.imgen_params["n"] = args.amount 
+    if args.width: request_data.imgen_params["width"] = args.width 
+    if args.height: request_data.imgen_params["height"] = args.height 
+    if args.steps: request_data.imgen_params["steps"] = args.steps 
+    if args.prompt: request_data.submit_dict["prompt"] = args.prompt 
+    if args.nsfw: request_data.submit_dict["nsfw"] = args.nsfw 
+    if args.censor_nsfw: request_data.submit_dict["censor_nsfw"] = args.censor_nsfw 
+    if args.trusted_workers: request_data.submit_dict["trusted_workers"] = args.trusted_workers 
     if args.source_image: request_data.source_image = args.source_image
     if args.source_processing: request_data.source_processing = args.source_processing
     if args.source_mask: request_data.source_mask = args.source_mask
@@ -115,6 +117,7 @@ def generate():
         "Client-Agent": request_data.client_agent,
     }
     # logger.debug(request_data.get_submit_dict())
+    logger.debug(json.dumps(request_data.get_submit_dict(), indent=4))
     submit_req = requests.post(f'{args.horde}/api/v2/generate/async', json = request_data.get_submit_dict(), headers = headers)
     if submit_req.ok:
         submit_results = submit_req.json()
