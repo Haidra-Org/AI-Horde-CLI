@@ -38,9 +38,9 @@ imgen_params:
     # embedding:12345
     # OR use the provided inject_ti key
     # tis: 
-    #     - name: 7523
+    #     - name: "7523"
     #       inject_ti: prompt
-    #     - name: 7808
+    #     - name: "EasyNegative"
     #       inject_ti: negprompt
     #       strength: 0.5
 
