@@ -23,7 +23,7 @@ imgen_params:
         # - CodeFormers
     # Uncomment the below line to pass a ControlNet. Make sure you write a valid Control Type
     # control_type: canny
-    # Uncomment the below line to pass a LoRa. The below is provided as an example
+    # Uncomment the below line to pass LoRa. The below is provided as an example
     # You can pass any that you wish. If you do, do not forget to also pass the trigger words in your prompt 
     # or use inject_trigger
     # loras: 
@@ -33,6 +33,16 @@ imgen_params:
     #       inject_trigger: any
     #     - name: LowRA
     #       inject_trigger: any
+    # Uncomment the below line to pass Textual Inversions. The below is provided as an example
+    # You can pass any that you wish. You must then either put the Lora ID in the prompt in the form of
+    # embedding:12345
+    # OR use the provided inject_ti key
+    # tis: 
+    #     - name: 7523
+    #       inject_ti: prompt
+    #     - name: 7808
+    #       inject_ti: negprompt
+    #       strength: 0.5
 
 submit_dict: 
     prompt: "a swarm of incredibly cute stable robots, intricate, highly detailed, artstation, concept art, smooth, sharp focus, colorful scene,  in the style of don bluth, greg rutkowski, disney, and hans zatzka"

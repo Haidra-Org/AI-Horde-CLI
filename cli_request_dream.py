@@ -117,7 +117,7 @@ def generate():
         "Client-Agent": request_data.client_agent,
     }
     # logger.debug(request_data.get_submit_dict())
-    logger.debug(json.dumps(request_data.get_submit_dict(), indent=4))
+    # logger.debug(json.dumps(request_data.get_submit_dict(), indent=4))
     submit_req = requests.post(f'{args.horde}/api/v2/generate/async', json = request_data.get_submit_dict(), headers = headers)
     if submit_req.ok:
         submit_results = submit_req.json()
@@ -186,7 +186,7 @@ def generate():
             censored = ''
             if results[iter]["censored"]:
                 censored = " (censored)"
-            logger.generation(f"Saved{censored} {final_filename} (via {results[iter]['worker_id']})")
+            logger.generation(f"Saved{censored} {final_filename} for {results_json['kudos']} kudos (via {results[iter]['worker_id']})")
     else:
         logger.error(submit_req.text)
 
