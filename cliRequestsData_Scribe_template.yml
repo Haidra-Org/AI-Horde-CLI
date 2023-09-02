@@ -4,6 +4,13 @@ txtgen_params:
     n: 1
     max_context_length: 1024
     max_length: 80
+    # temperature: 1
+    # rep_pen: 1
+    # rep_pen_range: 1
+    # rep_pen_slope: 1
+    # singleline: False
+    # sampler_order: [1,2,3,4,5,6,7] # You need to specify all samplers when uncommented
+    # use_default_badwordsids: True    
 submit_dict:
     prompt: "a horde of cute kobolds furiously typing on typewriters"
     trusted_workers: false
@@ -11,5 +18,6 @@ submit_dict:
     dry_run: true
     # Put the models you allow to fulfil your request in reverse order of priority. The last model in this list is the most likely to be chosen
     models:
-        - PygmalionAI/pygmalion-6b
+        - tgi/jondurbin/airoboros-l2-70b-2.1-creative-8k
+        - tgi/Henk717/airochronos-33B-8k
     workers: []
