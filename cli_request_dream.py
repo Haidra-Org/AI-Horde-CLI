@@ -73,7 +73,7 @@ class RequestData(object):
             "denoising_strength": 0.6,
         }
         self.submit_dict = {
-            "prompt": "hyperrealistic HDR render, rpg evil witch, witch robes, pointy hat, wand, ",
+            "prompt": "a horde of cute stable robots in a sprawling server room repairing a massive mainframe",
             "nsfw": False,
             "censor_nsfw": False,
             "trusted_workers": False,
