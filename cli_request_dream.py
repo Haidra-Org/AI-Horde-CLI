@@ -53,7 +53,7 @@ arg_parser.add_argument('--dry_run', action="store_true", default=False, require
                         help="If true, The request will only print the amount of kudos the payload would spend, and exit.")
 arg_parser.add_argument('--yml_file', action="store", default="cliRequestsData_Dream.yml",
                         required=False, help="Overrides the default yml, CLI arguments still have priority.")
-arg_parser.add_argument('-b', '--progress_bar', action="store", required=False,
+arg_parser.add_argument('-b', '--progress_bar', action="store_true", required=False,
                         default=True, help="Show the progress bar")
 args = arg_parser.parse_args()
 
@@ -149,10 +149,6 @@ def load_request_data():
         request_data.source_mask = args.source_mask
     if args.dry_run:
         request_data.submit_dict["dry_run"] = args.dry_run
-    if args.verbosity:
-        request_data.submit_dict["verbosity"] = args.verbosity
-    if args.progress_bar:
-        request_data.submit_dict["progress_bar"] = args.progress_bar
     return (request_data)
 
 
@@ -160,10 +156,11 @@ def load_request_data():
 def generate():
     request_data = load_request_data()
     # final_submit_dict["source_image"] = 'Test'
-    verbosity = request_data.submit_dict.get('verbosity')
-    progress_bar = request_data.submit_dict.get('progress_bar')
 
-    if ( verbosity is None ) and progress_bar:
+    progress_bar = args.progress_bar
+    if args.verbosity and progress_bar:
+        progress_bar = False
+    if progress_bar:
         pbar_queue_position = tqdm(desc="queue position: N/A | Wait Time: N/A",bar_format="{desc}")
         pbar_progress = tqdm(
             total=request_data.imgen_params.get('n'), desc="progress")
@@ -197,7 +194,7 @@ def generate():
                     chk_results = chk_req.json()
                     logger.info(chk_results)
 
-                    if verbosity is None and progress_bar:
+                    if progress_bar:
                         pbar_progress.desc = (
                             f"Wait:{chk_results.get('waiting')} "
                             f"Proc:{chk_results.get('processing')} "
@@ -242,6 +239,9 @@ def generate():
                 f"Something went wrong when generating the request. Please contact the horde administrator with your request details: {final_submit_dict}")
             return
         results = results_json['generations']
+        if progress_bar:
+            pbar_queue_position.close()
+            pbar_progress.close()
         for iter in range(len(results)):
             final_filename = request_data.filename
             if len(results) > 1:
