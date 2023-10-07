@@ -6,7 +6,7 @@ STDOUT_LEVELS = ["GENERATION", "PROMPT"]
 INIT_LEVELS = ["INIT", "INIT_OK", "INIT_WARN", "INIT_ERR"]
 MESSAGE_LEVELS = ["MESSAGE"]
 # By default we're at error level or higher
-verbosity = 40
+verbosity = 30
 quiet = 0
 
 def set_logger_verbosity(count):
@@ -14,7 +14,7 @@ def set_logger_verbosity(count):
     # The count comes reversed. So count = 0 means minimum verbosity
     # While count 5 means maximum verbosity
     # So the more count we have, the lower we drop the verbosity maximum
-    verbosity = 40 - (count * 10)
+    verbosity = 30 - (count * 10)
 
 def quiesce_logger(count):
     global quiet
@@ -99,7 +99,7 @@ config = {
 logger.configure(**config)
 logger.add("cliRequests.log", retention="7 days", level=19)
 logger.disable("__main__")
-logger.warning("disabled")
+# logger.warning("disabled")
 logger.enable("")
 logger.enable(None)
 
