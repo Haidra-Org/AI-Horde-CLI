@@ -54,7 +54,7 @@ arg_parser.add_argument('--dry_run', action="store_true", default=False, require
 arg_parser.add_argument('--yml_file', action="store", default="cliRequestsData_Dream.yml",
                         required=False, help="Overrides the default yml, CLI arguments still have priority.")
 arg_parser.add_argument('-b', '--progress_bar', action="store", required=False,
-                        default=False, help="Show the progress bar")
+                        default=True, help="Show the progress bar")
 args = arg_parser.parse_args()
 
 
@@ -164,16 +164,9 @@ def generate():
     progress_bar = request_data.submit_dict.get('progress_bar')
 
     if ( verbosity is None ) and progress_bar:
-        pbar_queue_position = tqdm(total=1000, desc="queue position")
-        pbar_wait_time = tqdm(total=100, desc="wait time")
-        pbar_waiting = tqdm(
-            total=request_data.imgen_params.get('n'), desc="waiting")
-        pbar_restarted = tqdm(
-            total=request_data.imgen_params.get('n'), desc="restarted")
-        pbar_processing = tqdm(
-            total=request_data.imgen_params.get('n'), desc="processing")
-        pbar_finished = tqdm(
-            total=request_data.imgen_params.get('n'), desc="finished")
+        pbar_queue_position = tqdm(desc="queue position: N/A | Wait Time: N/A",bar_format="{desc}")
+        pbar_progress = tqdm(
+            total=request_data.imgen_params.get('n'), desc="progress")
 
     headers = {
         "apikey": request_data.api_key,
@@ -204,22 +197,18 @@ def generate():
                     chk_results = chk_req.json()
                     logger.info(chk_results)
 
-                    if ( verbosity is None ) and progress_bar:
-                        # print(chk_results)
-                        pbar_queue_position.n = chk_results.get(
-                            'queue_position')
-                        pbar_wait_time.n = chk_results.get('wait_time')
-                        pbar_finished.n = chk_results.get('finished')
-                        pbar_processing.n = chk_results.get('processing')
-                        pbar_restarted.n = chk_results.get('restarted')
-                        pbar_waiting.n = chk_results.get('waiting')
+                    if verbosity is None and progress_bar:
+                        pbar_progress.desc = (
+                            f"Wait:{chk_results.get('waiting')} "
+                            f"Proc:{chk_results.get('processing')} "
+                            f"Res:{chk_results.get('restarted')} "
+                            f"Fin:{chk_results.get('finished')}"
+                        )
+                        pbar_queue_position.desc = f"Queue Position: {chk_results.get('queue_position')} | ETA: {chk_results.get('wait_time')}s"
+                        pbar_progress.n = chk_results.get('finished')
 
                         pbar_queue_position.refresh()
-                        pbar_wait_time.refresh()
-                        pbar_finished.refresh()
-                        pbar_processing.refresh()
-                        pbar_restarted.refresh()
-                        pbar_waiting.refresh()
+                        pbar_progress.refresh()
 
                     is_done = chk_results['done']
                     time.sleep(0.8)
@@ -275,7 +264,7 @@ def generate():
             censored = ''
             if results[iter]["censored"]:
                 censored = " (censored)"
-            logger.generation(
+            logger.message(
                 f"Saved{censored} {final_filename} for {results_json['kudos']} kudos (via {results[iter]['worker_id']})")
     else:
         logger.error(submit_req.text)
@@ -283,5 +272,4 @@ def generate():
 
 set_logger_verbosity(args.verbosity)
 quiesce_logger(args.quiet)
-
 generate()
