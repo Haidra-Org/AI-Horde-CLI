@@ -53,6 +53,8 @@ arg_parser.add_argument('--dry_run', action="store_true", default=False, require
                         help="If true, The request will only print the amount of kudos the payload would spend, and exit.")
 arg_parser.add_argument('--yml_file', action="store", default="cliRequestsData_Dream.yml",
                         required=False, help="Overrides the default yml, CLI arguments still have priority.")
+arg_parser.add_argument('-b', '--progress_bar', action="store", required=False,
+                        default=False, help="Show the progress bar")
 args = arg_parser.parse_args()
 
 
@@ -147,6 +149,10 @@ def load_request_data():
         request_data.source_mask = args.source_mask
     if args.dry_run:
         request_data.submit_dict["dry_run"] = args.dry_run
+    if args.verbosity:
+        request_data.submit_dict["verbosity"] = args.verbosity
+    if args.progress_bar:
+        request_data.submit_dict["progress_bar"] = args.progress_bar
     return (request_data)
 
 
@@ -154,17 +160,20 @@ def load_request_data():
 def generate():
     request_data = load_request_data()
     # final_submit_dict["source_image"] = 'Test'
-    pbar_queue_position = tqdm(total=1000, desc="queue position")
-    pbar_wait_time = tqdm(total=100, desc="wait time")
-    pbar_waiting = tqdm(
-        total=request_data.imgen_params.get('n'), desc="waiting")
-    pbar_restarted = tqdm(
-        total=request_data.imgen_params.get('n'), desc="restarted")
-    pbar_processing = tqdm(
-        total=request_data.imgen_params.get('n'), desc="processing")
-    pbar_finished = tqdm(
-        total=request_data.imgen_params.get('n'), desc="finished")
+    verbosity = request_data.submit_dict.get('verbosity')
+    progress_bar = request_data.submit_dict.get('progress_bar')
 
+    if ( verbosity is None ) and progress_bar:
+        pbar_queue_position = tqdm(total=1000, desc="queue position")
+        pbar_wait_time = tqdm(total=100, desc="wait time")
+        pbar_waiting = tqdm(
+            total=request_data.imgen_params.get('n'), desc="waiting")
+        pbar_restarted = tqdm(
+            total=request_data.imgen_params.get('n'), desc="restarted")
+        pbar_processing = tqdm(
+            total=request_data.imgen_params.get('n'), desc="processing")
+        pbar_finished = tqdm(
+            total=request_data.imgen_params.get('n'), desc="finished")
 
     headers = {
         "apikey": request_data.api_key,
@@ -195,20 +204,22 @@ def generate():
                     chk_results = chk_req.json()
                     logger.info(chk_results)
 
-                    #print(chk_results)
-                    pbar_queue_position.n = chk_results.get('queue_position')
-                    pbar_wait_time.n = chk_results.get('wait_time')
-                    pbar_finished.n = chk_results.get('finished')
-                    pbar_processing.n = chk_results.get('processing')
-                    pbar_restarted.n = chk_results.get('restarted')
-                    pbar_waiting.n = chk_results.get('waiting')
+                    if ( verbosity is None ) and progress_bar:
+                        # print(chk_results)
+                        pbar_queue_position.n = chk_results.get(
+                            'queue_position')
+                        pbar_wait_time.n = chk_results.get('wait_time')
+                        pbar_finished.n = chk_results.get('finished')
+                        pbar_processing.n = chk_results.get('processing')
+                        pbar_restarted.n = chk_results.get('restarted')
+                        pbar_waiting.n = chk_results.get('waiting')
 
-                    pbar_queue_position.refresh()
-                    pbar_wait_time.refresh()
-                    pbar_finished.refresh()
-                    pbar_processing.refresh()
-                    pbar_restarted.refresh()
-                    pbar_waiting.refresh()
+                        pbar_queue_position.refresh()
+                        pbar_wait_time.refresh()
+                        pbar_finished.refresh()
+                        pbar_processing.refresh()
+                        pbar_restarted.refresh()
+                        pbar_waiting.refresh()
 
                     is_done = chk_results['done']
                     time.sleep(0.8)
