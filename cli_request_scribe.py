@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import requests, json, os, time, argparse, base64
 import yaml
 import sys
