@@ -265,7 +265,7 @@ def generate():
             if results[iter]["censored"]:
                 censored = " (censored)"
             logger.message(
-                f"Saved{censored} {final_filename} for {results_json['kudos']} kudos (via {results[iter]['worker_id']})")
+                f"Saved{censored} {final_filename} for {results_json['kudos']} kudos (via {results[iter]['worker_name']} - {results[iter]['worker_id']})")
     else:
         logger.error(submit_req.text)
 
