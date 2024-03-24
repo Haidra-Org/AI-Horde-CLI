@@ -60,6 +60,7 @@ args = arg_parser.parse_args()
 
 class RequestData(object):
     def __init__(self):
+        self.submit_prepared = False
         self.client_agent = "cli_request_dream.py:1.1.0:(discord)db0#1625"
         self.api_key = "0000000000"
         self.filename = "witch_dream.png"
@@ -82,10 +83,13 @@ class RequestData(object):
             "dry_run": False
         }
         self.source_image = None
+        self.extra_source_images = None
         self.source_processing = "img2img"
         self.source_mask = None
 
     def get_submit_dict(self):
+        if self.submit_prepared:
+            return self.submit_dict
         submit_dict = self.submit_dict.copy()
         submit_dict["params"] = self.imgen_params
         submit_dict["source_processing"] = self.source_processing
@@ -103,7 +107,24 @@ class RequestData(object):
             final_src_mask.save(buffer, format="Webp", quality=95, exact=True)
             submit_dict["source_mask"] = base64.b64encode(
                 buffer.getvalue()).decode("utf8")
-        return (submit_dict)
+        if self.extra_source_images:
+            for esi in self.extra_source_images:
+                if not isinstance(esi, dict):
+                    logger.warning(f"Bad extra_source_images payload. Type: {type(esi)} (should be dict)")
+                    continue
+                if "image" not in esi:
+                    logger.warning(f"No image key in extra_source_image entry.")
+                    continue
+                final_esi = Image.open(esi["image"])
+                buffer = BytesIO()
+                # We send as WebP to avoid using all the horde bandwidth
+                final_esi.save(buffer, format="Webp", quality=95, exact=True)
+                esi["image"] = base64.b64encode(
+                    buffer.getvalue()).decode("utf8")
+            submit_dict["extra_source_images"] = self.extra_source_images
+        self.submit_prepared = True
+        self.submit_dict = submit_dict
+        return submit_dict
 
 
 def load_request_data():

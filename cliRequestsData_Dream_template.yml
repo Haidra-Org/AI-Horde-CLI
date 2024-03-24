@@ -63,10 +63,18 @@ submit_dict:
         # - trinart
     workers: []
 
-# Uncomment this line to try img2img
+## Uncomment this line to try img2img
 # Change the filename to your own image
 # source_image: './db0.jpg'
-# Uncomment these three lines to try inpainting. If the source_mask is not provided, the image sent has to have areas already erased-to-alpha
+## Uncomment these three lines to try inpainting. If the source_mask is not provided, the image sent has to have areas already erased-to-alpha
 # source_image: './inpaint_original.png'
 # source_processing: 'inpainting'
 # source_mask: './inpaint_mask.png'
+## Uncomment the below lines to send extra_source_images for remix. Change to your own image paths accordingly. 
+# source_image: './db0.jpg'
+# extra_source_images: 
+#     - image: ./mountains.png
+#       strength: 1
+#     - image: ./sunset.png
+#       strength: 0.5
+# source_processing: 'remix'
