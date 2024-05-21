@@ -72,6 +72,7 @@ class RequestData(object):
             "sampler_name": "k_euler_a",
             "cfg_scale": 7.5,
             "denoising_strength": 0.6,
+            "hires_fix_denoising_strength": 0.5,
         }
         self.submit_dict = {
             "prompt": "a horde of cute stable robots in a sprawling server room repairing a massive mainframe",

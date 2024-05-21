@@ -13,19 +13,19 @@ imgen_params:
     karras: true
     tiling: false
     hires_fix: false
-    # Uncomment the below line to pass a specific seed
+    ## Uncomment the below line to pass a specific seed
     # seed: "the little seed that could"
-    # Uncomment the below line to pass post-processors. Only pass the PPs you need
+    ## Uncomment the below line to pass post-processors. Only pass the PPs you need
     # post_processing: 
         # - GFPGAN
         # - RealESRGAN_x4plus
         # - RealESRGAN_x4plus_anime_6B
         # - CodeFormers
-    # Uncomment the below line to pass a ControlNet. Make sure you write a valid Control Type
-    # control_type: canny
-    # Uncomment the below line to pass LoRa. The below is provided as an example
-    # You can pass any that you wish. If you do, do not forget to also pass the trigger words in your prompt 
-    # or use inject_trigger
+    ## Uncomment the below line to pass a ControlNet. Make sure you write a valid Control Type
+    ## control_type: canny
+    ## Uncomment the below line to pass LoRa. The below is provided as an example
+    ## You can pass any that you wish. If you do, do not forget to also pass the trigger words in your prompt 
+    ## or use inject_trigger
     # loras: 
     #     - name: GlowingRunesAIV6
     #       inject_trigger: red
@@ -33,16 +33,39 @@ imgen_params:
     #       inject_trigger: any
     #     - name: LowRA
     #       inject_trigger: any
-    # Uncomment the below line to pass Textual Inversions. The below is provided as an example
-    # You can pass any that you wish. You must then either put the Lora ID in the prompt in the form of
+    ## Uncomment the below line to pass Textual Inversions. The below is provided as an example
+    ## You can pass any that you wish. You must then either put the Lora ID in the prompt in the form of
     # embedding:12345
-    # OR use the provided inject_ti key
+    ## OR use the provided inject_ti key
     # tis: 
     #     - name: "7523"
     #       inject_ti: prompt
     #     - name: "EasyNegative"
     #       inject_ti: negprompt
     #       strength: 0.5
+    #
+    ## Uncomment the below lines to pass extra arguments to the workflows which require it. 
+    ## Each text has to be in the same format, (i.e. a dictionary with a 'text' and 'reference' keys) 
+    ## The below examples are used to generate a QR code (Don't forget to uncomment the 'workflow' below)
+    # extra_texts: 
+    #     # This extra text is the text created by the QR code
+    #     - text: https://haidra.net
+    #       reference: qr_code
+    #     # This optional extra text specifies where in the image to place the QR code
+    #     # If you want the whole image to be one QR, you need to adjust the generation size
+    #     # size to match the QR code size
+    #     - text: 256
+    #       reference: x_offset
+    #     - text: 256
+    #       reference: y_offset
+    #     # This specifies the prompt with which to generate the black blocks around the QR edges
+    #     # These blocks need to be very readable, so don't expect too much customization
+    #     - text: 'A window into the soul'
+    #       reference: function_layer_prompt
+    # # Uncomment the below line to specify the workflow to use. 
+    # # Some advanced workflows cannot be auto-detected, so you need to explicitly mention them
+    # # The below example will set the generation to make a QR code
+    # workflow: qr_code
 
 submit_dict: 
     prompt: "a swarm of incredibly cute stable robots, intricate, highly detailed, artstation, concept art, smooth, sharp focus, colorful scene,  in the style of don bluth, greg rutkowski, disney, and hans zatzka"
