@@ -69,6 +69,8 @@ imgen_params:
 
 submit_dict: 
     prompt: "a swarm of incredibly cute stable robots, intricate, highly detailed, artstation, concept art, smooth, sharp focus, colorful scene,  in the style of don bluth, greg rutkowski, disney, and hans zatzka"
+    # Pass your own style name or ID here to generate in a pre-existing style
+    # style: None 
     nsfw: false
     censor_nsfw: false
     trusted_workers: false

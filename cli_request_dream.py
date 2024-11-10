@@ -21,6 +21,8 @@ arg_parser.add_argument("-m", '--model', action="store", default="stable_diffusi
                         type=str, help="Generalist AI image generating model. The baseline for all finetuned models")
 arg_parser.add_argument('-p', '--prompt', action="store", required=False,
                         type=str, help="The prompt with which to generate images")
+arg_parser.add_argument('--style', action="store", required=False,
+                        type=str, help="The style to use to generate the images")
 arg_parser.add_argument('-w', '--width', action="store", required=False, type=int,
                         help="The width of the image to generate. Has to be a multiple of 64")
 arg_parser.add_argument('-l', '--height', action="store", required=False, type=int,
@@ -157,6 +159,8 @@ def load_request_data():
         request_data.imgen_params["steps"] = args.steps
     if args.prompt:
         request_data.submit_dict["prompt"] = args.prompt
+    if args.style:
+        request_data.submit_dict["style"] = args.style
     if args.nsfw:
         request_data.submit_dict["nsfw"] = args.nsfw
     if args.censor_nsfw:
@@ -198,6 +202,7 @@ def generate():
     if submit_req.ok:
         submit_results = submit_req.json()
         logger.debug(submit_results)
+        # logger.debug(submit_req.headers)
         req_id = submit_results.get('id')
         if not req_id:
             logger.message(submit_results)
@@ -265,6 +270,7 @@ def generate():
             pbar_queue_position.close()
             pbar_progress.close()
         for iter in range(len(results)):
+            # logger.debug(results[iter]['gen_metadata'])
             final_filename = request_data.filename
             if len(results) > 1:
                 final_filename = f"{iter}_{request_data.filename}"
@@ -284,8 +290,11 @@ def generate():
                 img = Image.open(BytesIO(img_bytes))
                 img.save(final_filename)
             censored = ''
-            if results[iter]["censored"]:
-                censored = " (censored)"
+            for metadata in results[iter]['gen_metadata']:
+                if metadata.get('type') == 'censorship':
+                    censored = " (censored)"
+                if metadata.get('type') == 'batch_index':
+                    logger.debug(metadata['ref'])
             logger.message(
                 f"Saved{censored} {final_filename} for {results_json['kudos']} kudos (via {results[iter]['worker_name']} - {results[iter]['worker_id']})")
     else:
