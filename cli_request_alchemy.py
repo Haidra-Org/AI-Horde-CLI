@@ -9,7 +9,7 @@ from requests.exceptions import ConnectionError
 
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('--api_key', type=str, action='store', required=False, help="The API Key to use to authenticate on the Horde. Get one in https://aihorde.net/register")
-arg_parser.add_argument('-f', '--filename', type=str, action='store', required=False, help="The filename patterrn to use. The type of alchemy will be appended to this.")
+arg_parser.add_argument('-f', '--filename', type=str, action='store', required=False, help="The filename pattern to use. The type of alchemy will be appended to this.")
 arg_parser.add_argument('-v', '--verbosity', action='count', default=0, help="The default logging level is ERROR or higher. This value increases the amount of logging seen in your screen")
 arg_parser.add_argument('-q', '--quiet', action='count', default=0, help="The default logging level is ERROR or higher. This value decreases the amount of logging seen in your screen")
 arg_parser.add_argument('--horde', action="store", required=False, type=str, default="https://aihorde.net", help="Use a different horde")

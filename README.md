@@ -23,7 +23,7 @@ options:
   -h, --help            show this help message and exit
   --api_key API_KEY     The API Key to use to authenticate on the Horde. Get one in https://aihorde.net/register
   -f FILENAME, --filename FILENAME
-                        The filename patterrn to use. The type of alchemy will be appended to this.
+                        The filename pattern to use. The type of alchemy will be appended to this.
   -v, --verbosity       The default logging level is ERROR or higher. This value increases the amount of logging seen in your screen
   -q, --quiet           The default logging level is ERROR or higher. This value decreases the amount of logging seen in your screen
   --horde HORDE         Use a different horde
